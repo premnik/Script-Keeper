@@ -1,0 +1,25 @@
+<div class="container mt-4">
+    <h2 class="mb-4">SQL Script Finder</h2>
+  
+    <div class="mb-3">
+      <label for="scriptKey" class="form-label">Enter Script Key</label>
+      <input type="text" id="scriptKey" class="form-control" [(ngModel)]="selectedKey" placeholder="e.g., get_users" />
+    </div>
+  
+    <button class="btn btn-primary mb-3" (click)="findScript()">Find Script</button>
+  
+    <div *ngIf="result" class="card">
+      <div class="card-body">
+        <h5 class="card-title">Description</h5>
+        <p class="card-text">{{ result.description }}</p>
+  
+        <h5 class="card-title mt-3">SQL Script</h5>
+        <pre class="bg-light p-3 border rounded">{{ result.script }}</pre>
+      </div>
+    </div>
+  
+    <div *ngIf="result === null && selectedKey" class="alert alert-warning mt-3">
+      No script found for key "<strong>{{ selectedKey }}</strong>"
+    </div>
+  </div>
+  
