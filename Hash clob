@@ -1,0 +1,20 @@
+CREATE OR REPLACE FUNCTION hash_large_clob(p_clob IN CLOB)
+  RETURN RAW
+IS
+  v_pos      INTEGER := 1;
+  v_len      INTEGER := DBMS_LOB.GETLENGTH(p_clob);
+  v_chunk    VARCHAR2(32767);
+  v_concat   RAW(32767) := UTL_RAW.CAST_TO_RAW(''); -- Start with empty raw
+  v_chunk_raw RAW(32767);
+BEGIN
+  WHILE v_pos <= v_len LOOP
+    v_chunk := DBMS_LOB.SUBSTR(p_clob, 32767, v_pos);
+    v_chunk_raw := UTL_RAW.CAST_TO_RAW(v_chunk);
+    v_concat := v_concat || v_chunk_raw;
+    v_pos := v_pos + 32767;
+  END LOOP;
+
+  -- Return SHA-256 hash of the full RAW content
+  RETURN DBMS_CRYPTO.HASH(v_concat, DBMS_CRYPTO.HASH_SH256);
+END;
+/
