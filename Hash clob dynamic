@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION hash_clob_full(p_clob CLOB) RETURN VARCHAR2 IS
+    v_offset    NUMBER := 1;
+    v_chunk     VARCHAR2(32767);
+    v_chunk_hash VARCHAR2(64);
+    v_all_hashes CLOB;
+    v_final_hash VARCHAR2(64);
+BEGIN
+    DBMS_LOB.CREATETEMPORARY(v_all_hashes, TRUE);
+
+    LOOP
+        -- Read next chunk from CLOB
+        v_chunk := DBMS_LOB.SUBSTR(p_clob, 32767, v_offset);
+        EXIT WHEN v_chunk IS NULL;
+
+        -- Hash the chunk
+        SELECT STANDARD_HASH(v_chunk, 'SHA256') INTO v_chunk_hash FROM dual;
+
+        -- Append hash to CLOB
+        DBMS_LOB.WRITEAPPEND(v_all_hashes, LENGTH(v_chunk_hash), v_chunk_hash);
+
+        -- Move offset forward
+        v_offset := v_offset + 32767;
+    END LOOP;
+
+    -- Hash the concatenated hash string
+    SELECT STANDARD_HASH(DBMS_LOB.SUBSTR(v_all_hashes, 32767, 1), 'SHA256')
+    INTO v_final_hash
+    FROM dual;
+
+    RETURN v_final_hash;
+END;
