@@ -1,0 +1,28 @@
+DECLARE
+  l_clob1 CLOB;
+  l_clob2 CLOB;
+  l_offset NUMBER := 1;
+  l_chunk_size NUMBER := 4000;
+  l_chunk1 VARCHAR2(4000);
+  l_chunk2 VARCHAR2(4000);
+  l_match BOOLEAN := TRUE;
+BEGIN
+  SELECT clob_column INTO l_clob1 FROM table1 WHERE id = 1;
+  SELECT clob_column INTO l_clob2 FROM table2 WHERE id = 1;
+  
+  WHILE l_offset <= DBMS_LOB.GETLENGTH(l_clob1) AND l_match LOOP
+    l_chunk1 := DBMS_LOB.SUBSTR(l_clob1, l_chunk_size, l_offset);
+    l_chunk2 := DBMS_LOB.SUBSTR(l_clob2, l_chunk_size, l_offset);
+    IF l_chunk1 != l_chunk2 OR l_chunk1 IS NULL AND l_chunk2 IS NOT NULL
+       OR l_chunk1 IS NOT NULL AND l_chunk2 IS NULL THEN
+      l_match := FALSE;
+    END IF;
+    l_offset := l_offset + l_chunk_size;
+  END LOOP;
+  
+  IF l_match THEN
+    DBMS_OUTPUT.PUT_LINE('CLOBs match');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('CLOBs differ');
+  END IF;
+END;
