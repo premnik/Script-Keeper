@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION get_full_clob(p_id IN NUMBER)
+  RETURN CLOB
+IS
+  v_clob     CLOB;
+  v_result   CLOB := EMPTY_CLOB();
+  v_chunk    VARCHAR2(32767);
+  v_pos      INTEGER := 1;
+  v_len      INTEGER;
+BEGIN
+  -- Fetch the CLOB value (replace table and column as needed)
+  SELECT clob_column
+  INTO v_clob
+  FROM your_table
+  WHERE id = p_id;
+
+  -- Get the length of the CLOB
+  v_len := DBMS_LOB.GETLENGTH(v_clob);
+
+  -- Create a temporary CLOB to store the result
+  DBMS_LOB.CREATETEMPORARY(v_result, TRUE);
+
+  -- Read and append the CLOB content in chunks of 32,767 characters
+  WHILE v_pos <= v_len LOOP
+    v_chunk := DBMS_LOB.SUBSTR(v_clob, 32767, v_pos);
+    DBMS_LOB.WRITEAPPEND(v_result, LENGTH(v_chunk), v_chunk);
+    v_pos := v_pos + 32767;
+  END LOOP;
+
+  RETURN v_result;
+END;
+/
