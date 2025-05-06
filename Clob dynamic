@@ -1,0 +1,32 @@
+DECLARE
+  v_table_name   VARCHAR2(100) := 'YOUR_TABLE';         -- Table name
+  v_column_name  VARCHAR2(100) := 'CLOB_COLUMN';        -- CLOB column name
+  v_where_clause VARCHAR2(1000) := 'id = 1';             -- WHERE condition
+  v_sql          VARCHAR2(2000);
+  v_clob         CLOB;
+  v_chunk        VARCHAR2(32767);
+  v_pos          INTEGER := 1;
+  v_len          INTEGER;
+  v_result       CLOB := EMPTY_CLOB();
+BEGIN
+  -- Build dynamic SQL
+  v_sql := 'SELECT ' || v_column_name || ' FROM ' || v_table_name || ' WHERE ' || v_where_clause;
+
+  -- Execute and fetch CLOB
+  EXECUTE IMMEDIATE v_sql INTO v_clob;
+
+  v_len := DBMS_LOB.GETLENGTH(v_clob);
+  DBMS_LOB.CREATETEMPORARY(v_result, TRUE);
+
+  WHILE v_pos <= v_len LOOP
+    v_chunk := DBMS_LOB.SUBSTR(v_clob, 32767, v_pos);
+    DBMS_LOB.WRITEAPPEND(v_result, LENGTH(v_chunk), v_chunk);
+    v_pos := v_pos + 32767;
+  END LOOP;
+
+  -- Output (or process) result
+  DBMS_OUTPUT.PUT_LINE('Full CLOB Retrieved. Length: ' || DBMS_LOB.GETLENGTH(v_result));
+  -- Optional: Output first 2000 chars
+  DBMS_OUTPUT.PUT_LINE(SUBSTR(v_result, 1, 2000));
+END;
+/
