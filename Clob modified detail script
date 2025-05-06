@@ -1,0 +1,51 @@
+-- Object to hold chunk number and content
+CREATE OR REPLACE TYPE clob_chunk_obj AS OBJECT (
+    chunk_num   NUMBER,
+    chunk_text  VARCHAR2(32767)
+);
+
+-- Table of the above object
+CREATE OR REPLACE TYPE clob_chunk_table_obj AS TABLE OF clob_chunk_obj;
+
+
+-------
+CREATE OR REPLACE FUNCTION get_clob_chunks_with_index(p_clob IN CLOB)
+RETURN clob_chunk_table_obj
+PIPELINED
+IS
+    v_length     PLS_INTEGER := DBMS_LOB.GETLENGTH(p_clob);
+    v_chunk_size PLS_INTEGER := 32767;
+    v_offset     PLS_INTEGER := 1;
+    v_chunk      VARCHAR2(32767);
+    v_index      NUMBER := 1;
+BEGIN
+    IF v_length <= v_chunk_size THEN
+        PIPE ROW(clob_chunk_obj(v_index, DBMS_LOB.SUBSTR(p_clob, v_length, 1)));
+    ELSE
+        WHILE v_offset <= v_length LOOP
+            v_chunk := DBMS_LOB.SUBSTR(p_clob, v_chunk_size, v_offset);
+            PIPE ROW(clob_chunk_obj(v_index, v_chunk));
+            v_offset := v_offset + v_chunk_size;
+            v_index := v_index + 1;
+        END LOOP;
+    END IF;
+
+    RETURN;
+END;
+/
+
+
+------
+DECLARE
+    v_clob CLOB;
+BEGIN
+    DBMS_LOB.CREATETEMPORARY(v_clob, TRUE);
+    FOR i IN 1 .. 500 LOOP
+        DBMS_LOB.WRITEAPPEND(v_clob, LENGTH('Chunked CLOB example. '), 'Chunked CLOB example. ');
+    END LOOP;
+
+    FOR rec IN (SELECT * FROM TABLE(get_clob_chunks_with_index(v_clob))) LOOP
+        DBMS_OUTPUT.PUT_LINE('Chunk #' || rec.chunk_num || ' - Length: ' || LENGTH(rec.chunk_text));
+    END LOOP;
+END;
+/
