@@ -1,0 +1,24 @@
+CREATE OR REPLACE FUNCTION get_clob_chunks(p_clob IN CLOB)
+RETURN clob_chunk_table
+PIPELINED
+IS
+    v_length     PLS_INTEGER := DBMS_LOB.GETLENGTH(p_clob);
+    v_chunk_size PLS_INTEGER := 32767;
+    v_offset     PLS_INTEGER := 1;
+    v_chunk      VARCHAR2(32767);
+BEGIN
+    IF v_length <= v_chunk_size THEN
+        -- Single small result
+        PIPE ROW(DBMS_LOB.SUBSTR(p_clob, v_length, 1));
+    ELSE
+        -- Chunking logic
+        WHILE v_offset <= v_length LOOP
+            v_chunk := DBMS_LOB.SUBSTR(p_clob, v_chunk_size, v_offset);
+            PIPE ROW(v_chunk);
+            v_offset := v_offset + v_chunk_size;
+        END LOOP;
+    END IF;
+
+    RETURN;
+END;
+/
