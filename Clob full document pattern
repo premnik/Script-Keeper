@@ -1,0 +1,79 @@
+1. Jira Innovation Ticket Format
+
+You can use this for submitting in a work/project tracking tool like Jira:
+
+Summary:
+Permanent PL/SQL Function to Validate and Debug Oracle CLOB Columns
+
+Description:
+While working with Oracle databases, CLOB columns often hold large logs or scripts that exceed standard VARCHAR limits. Testing and validation of these large values become time-consuming due to content size and complexity.
+
+To address this, I developed a dynamic PL/SQL function that:
+	•	Reads large CLOBs in chunks
+	•	Performs substring search and validation
+	•	Logs segments for traceability
+	•	Can be reused across Oracle projects
+
+This has significantly reduced testing/debugging time and introduced a reusable, production-ready solution.
+
+Impact:
+	•	Increased productivity and faster issue resolution
+	•	Consistent validation process for all CLOB columns
+	•	Can be shared as a central utility across teams
+
+Attachments: (You can include screenshots or code snippets of the function here)
+
+⸻
+
+2. Word Document Style
+
+Innovation Title: Permanent Oracle CLOB Validation Function
+
+Overview:
+Oracle’s CLOB data type is essential for large text storage, but it lacks straightforward debugging and validation tools. To address frequent development and testing delays, I created a reusable PL/SQL utility.
+
+Problem:
+	•	Debugging large CLOBs is slow
+	•	Difficult to extract specific segments
+	•	Manual validation consumes effort and time
+
+Solution:
+	•	A dynamic PL/SQL function was developed to:
+	•	Split CLOBs into readable/loggable chunks
+	•	Support length checks and substring validation
+	•	Integrate easily into existing stored procedures
+
+Benefits:
+	•	Saves time during testing and production debugging
+	•	Enhances developer productivity
+	•	Acts as a permanent utility for any Oracle-based project using CLOBs
+
+Conclusion:
+The function standardizes the way CLOB data is validated, enabling teams to save hours of manual effort and ensuring data reliability.
+
+⸻
+
+3. PowerPoint Slide Headings (For a Slide Deck)
+
+Slide 1 – Title:
+Permanent Solution for CLOB Validation in Oracle Database
+
+Slide 2 – Background/Problem:
+	•	Oracle CLOBs used for storing large data (logs, scripts, JSON, etc.)
+	•	Standard tools don’t handle large values well
+	•	Debugging is slow and error-prone
+
+Slide 3 – Innovation:
+	•	Developed dynamic PL/SQL function
+	•	Chunk-wise reading, substring validation, logging
+	•	Reusable, plug-and-play solution for any project
+
+Slide 4 – Benefits:
+	•	Faster testing and root cause analysis
+	•	Standardization across teams
+	•	Reduced manual effort
+
+Slide 5 – Impact:
+	•	Saved time during testing phases
+	•	Improved developer efficiency
+	•	Can be adopted as a best practice within the team
