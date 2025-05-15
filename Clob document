@@ -1,0 +1,31 @@
+Title: Permanent Solution for Validating CLOB Columns in Oracle Database
+
+Problem Statement:
+In Oracle databases, CLOB (Character Large Object) columns are essential for storing large textual content. However, validating and debugging large CLOB data during development or production incidents is time-consuming and inefficient. Issues like content truncation, encoding errors, or improper data formatting often go unnoticed due to the lack of built-in, user-friendly tools for CLOB inspection.
+
+Innovation Idea:
+To address this, I developed a dynamic PL/SQL function that serves as a permanent and reusable solution to validate, debug, and process CLOB columns efficiently within Oracle databases.
+
+Challenges Observed:
+	•	Difficulty in reading or extracting meaningful parts of large CLOB content
+	•	Traditional tools fail or timeout on very large entries
+	•	Increased developer effort in writing repetitive validation scripts
+	•	Testing delays due to lack of granular visibility into CLOB issues
+
+Permanent Solution Implemented:
+	•	Designed a PL/SQL function that:
+	•	Splits and reads large CLOB data in chunks
+	•	Logs specific byte/character ranges for traceability
+	•	Performs pattern validation, keyword searches, and length checks
+	•	Easily integrates with stored procedures, exception logging, and automated test cases
+	•	This function is now available in a shared library and can be invoked in any project using Oracle CLOBs
+
+
+Benefits:
+	•	One-time setup, permanent reuse
+	•	Quick identification of CLOB-related issues in development and production
+	•	Reduced debugging effort for developers and DBAs
+	•	Improved reliability and performance in applications relying on large text data
+
+Innovation Impact:
+This solution offers a standardized method to validate and manage CLOB columns in Oracle environments, ensuring consistent data handling across projects and significantly reducing manual intervention.
