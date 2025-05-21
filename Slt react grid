@@ -1,0 +1,53 @@
+// src/components/grids/SLTGridColumns.tsx
+import {
+  DataGridColumnHeader,
+  textFilterFn,
+} from '../../lib'; // Adjust path as needed
+
+import { GridColumnDef } from '../../utils/gridUtils'; // Adjust path
+import { SLTData } from '../../services/types/types';   // Define a type for SLT rows
+import { overflowEditIcon } from '../../assets/icons/iconSvg'; // or wherever your icon is
+
+export const sltGridColumns = (
+  onEditSLT: (slt: SLTData) => void
+): GridColumnDef<SLTData>[] => [
+  {
+    accessorFn: (row) => `${row.personNumber}_actions`,
+    id: 'actions',
+    header: () => (
+      <DataGridColumnHeader title="Actions" />
+    ),
+    cell: ({ row }) => (
+      <button
+        title="Edit"
+        onClick={() => onEditSLT(row.original)}
+      >
+        {overflowEditIcon}
+      </button>
+    ),
+  },
+  {
+    accessorKey: 'personNumber',
+    header: () => <DataGridColumnHeader title="SLT Person Number" />,
+    filterFn: textFilterFn,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'name',
+    header: () => <DataGridColumnHeader title="Name" />,
+    filterFn: textFilterFn,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'status',
+    header: () => <DataGridColumnHeader title="Status" />,
+    filterFn: textFilterFn,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'inactiveDate',
+    header: () => <DataGridColumnHeader title="Inactive Date" />,
+    filterFn: textFilterFn,
+    enableColumnFilter: true,
+  },
+];
