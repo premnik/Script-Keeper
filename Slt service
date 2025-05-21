@@ -1,0 +1,34 @@
+// src/services/slt.ts
+import { raptSplitAPI } from './raptAPI';
+import { SLTData } from '../types/types';
+
+export const slt = raptSplitAPI
+  .enhanceEndpoints({
+    addTagTypes: ['SLT'],
+  })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      getAllSLT: builder.query<SLTData[], void>({
+        queryFn: async () => {
+          const dummyData: SLTData[] = [
+            {
+              personNumber: 'SLT001',
+              name: 'John Doe',
+              status: 'Active',
+              inactiveDate: '',
+            },
+            {
+              personNumber: 'SLT002',
+              name: 'Jane Smith',
+              status: 'Inactive',
+              inactiveDate: '2024-10-01',
+            },
+          ];
+          return { data: dummyData };
+        },
+        providesTags: [{ type: 'SLT' }],
+      }),
+    }),
+  });
+
+export const { useGetAllSLTQuery } = slt;
