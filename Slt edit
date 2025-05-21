@@ -1,0 +1,92 @@
+import React from "react";
+import { IconWrapper } from "../components/IconWrapper";
+import { CustomButton } from "../components/CustomButton";
+import { checkIcon, crossIcon, overflowAddIcon, overflowEditIcon } from "../utils/icons";
+
+type SltData = {
+  sltId: string;
+  name: string;
+  role: string;
+  department: string;
+};
+
+type SltEditProps = {
+  sltData: SltData;
+  isCreateMode: boolean;
+  isDetailsValid: boolean;
+  onCancel: () => void;
+};
+
+const SltEdit: React.FC<SltEditProps> = ({
+  sltData,
+  isCreateMode,
+  isDetailsValid,
+  onCancel,
+}) => {
+  return (
+    <div className="w-full max-w-screen">
+      <section className="sm:max-w-screen mb-4">
+        <strong>
+          <div className="flex justify-between">
+            <div className="flex grow items-center pt-1.5 pl-2">
+              <span className="mr-4 text-lg">
+                <IconWrapper
+                  svg={isCreateMode ? overflowAddIcon : overflowEditIcon}
+                  ariaLabel={isCreateMode ? "add SLT icon" : "edit SLT icon"}
+                  size={22}
+                  color={"#0053C2"}
+                  className="cursor-default mr-2"
+                  viewBox="0 0 24 26"
+                />
+                {isCreateMode ? (
+                  <span>
+                    <strong>Create: </strong>
+                    <span className="font-normal">SLT</span>
+                  </span>
+                ) : (
+                  <span>
+                    <strong>Editing SLT: </strong>
+                    <span className="font-normal">{sltData.sltId}</span>
+                  </span>
+                )}
+              </span>
+              <CustomButton
+                size="xs"
+                className="px-8 text-[#0053C2] font-bold"
+                variant="tertiary"
+                id="cancelId"
+                type="button"
+                onClick={onCancel}
+              >
+                Cancel
+              </CustomButton>
+            </div>
+          </div>
+        </strong>
+      </section>
+
+      <section className="p-4 border-2 rounded-xl border-solid mb-4 sm:mb-0 mt-6">
+        <div className="flex justify-between">
+          <span className="justify-start text-lg">
+            <strong>SLT details</strong>
+          </span>
+          <span className="justify-end">
+            <IconWrapper
+              svg={isDetailsValid ? checkIcon : crossIcon}
+              ariaLabel={isDetailsValid ? "valid SLT details icon" : "invalid SLT details icon"}
+              size={20}
+              color="white"
+              className={
+                isDetailsValid
+                  ? "bg-[#176703] rounded-full p-1"
+                  : "bg-[#C41230] rounded-full p-1"
+              }
+            />
+          </span>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default SltEdit;
