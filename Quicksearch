@@ -1,0 +1,73 @@
+import React, { useState, useEffect } from 'react';
+
+type QuickSearchWrapperProps<T> = {
+  placeholder?: string;
+  minLength?: number;
+  delay?: number;
+  onSearch: (query: string) => Promise<T[]>;
+  onSelect: (item: T) => void;
+  renderItem: (item: T) => React.ReactNode;
+  className?: string;
+};
+
+export function QuickSearchWrapper<T>({
+  placeholder = 'Search...',
+  minLength = 3,
+  delay = 300,
+  onSearch,
+  onSelect,
+  renderItem,
+  className = ''
+}: QuickSearchWrapperProps<T>) {
+  const [inputValue, setInputValue] = useState('');
+  const [results, setResults] = useState<T[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    if (inputValue.length >= minLength) {
+      const handler = setTimeout(async () => {
+        const items = await onSearch(inputValue);
+        setResults(items);
+        setShowDropdown(true);
+      }, delay);
+      return () => clearTimeout(handler);
+    } else {
+      setShowDropdown(false);
+      setResults([]);
+    }
+  }, [inputValue, onSearch, minLength, delay]);
+
+  return (
+    <div className={`position-relative ${className}`}>
+      <input
+        type="text"
+        className="form-control"
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onFocus={() => {
+          if (results.length > 0) setShowDropdown(true);
+        }}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+      />
+
+      {showDropdown && results.length > 0 && (
+        <ul className="list-group position-absolute w-100 z-3">
+          {results.map((item, idx) => (
+            <li
+              key={idx}
+              className="list-group-item list-group-item-action"
+              onClick={() => {
+                onSelect(item);
+                setShowDropdown(false);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              {renderItem(item)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
