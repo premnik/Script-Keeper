@@ -1,0 +1,19 @@
+import React from 'react';
+import { QuickSearchWrapper } from './QuickSearchWrapper';
+
+const fruits = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+
+export default function App() {
+  return (
+    <div className="container mt-5" style={{ maxWidth: 400 }}>
+      <QuickSearchWrapper
+        placeholder="Search fruits..."
+        onSearch={async (query) =>
+          fruits.filter((f) => f.toLowerCase().includes(query.toLowerCase()))
+        }
+        onSelect={(item) => alert(`You selected: ${item}`)}
+        renderItem={(item) => <span>{item}</span>}
+      />
+    </div>
+  );
+}
