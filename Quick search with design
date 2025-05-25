@@ -1,0 +1,72 @@
+import React, { useState, useEffect } from 'react';
+
+type QuickSearchWrapperProps<T> = {
+  placeholder?: string;
+  minLength?: number;
+  delay?: number;
+  onSearch: (query: string) => Promise<T[]>;
+  onSelect: (item: T) => void;
+  renderItem: (item: T) => React.ReactNode;
+  className?: string;
+};
+
+export function QuickSearchWrapper<T>({
+  placeholder = 'Search...',
+  minLength = 3,
+  delay = 300,
+  onSearch,
+  onSelect,
+  renderItem,
+  className = '',
+}: QuickSearchWrapperProps<T>) {
+  const [inputValue, setInputValue] = useState('');
+  const [results, setResults] = useState<T[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    if (inputValue.length >= minLength) {
+      const handler = setTimeout(async () => {
+        const items = await onSearch(inputValue);
+        setResults(items);
+        setShowDropdown(true);
+      }, delay);
+      return () => clearTimeout(handler);
+    } else {
+      setShowDropdown(false);
+      setResults([]);
+    }
+  }, [inputValue, onSearch, minLength, delay]);
+
+  return (
+    <div className={`relative w-full ${className}`}>
+      <input
+        type="text"
+        className="w-full px-4 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none"
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onFocus={() => {
+          if (results.length > 0) setShowDropdown(true);
+        }}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+      />
+
+      {showDropdown && results.length > 0 && (
+        <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+          {results.map((item, idx) => (
+            <li
+              key={idx}
+              className="px-4 py-2 text-sm cursor-pointer hover:bg-indigo-100"
+              onClick={() => {
+                onSelect(item);
+                setShowDropdown(false);
+              }}
+            >
+              {renderItem(item)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
