@@ -1,0 +1,14 @@
+<QuickSearchWrapper<User>
+  placeholder="Search by name or ID..."
+  onSearch={fetchUsers}
+  onSelect={handleSelect}
+  selectedValue={selectedUser?.name || searchText}
+  setSelectedValue={(value: string) => {
+    setSearchText(value); // store current input
+    const matched = USERS.find((u) => u.name === value);
+    if (matched) setSelectedUser(matched);
+  }}
+  renderItem={(user) => <div>{user.name} (ID: {user.id})</div>}
+/>
+
+const [searchText, setSearchText] = useState('');
