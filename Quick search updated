@@ -1,0 +1,87 @@
+import React, { useEffect, useState } from 'react';
+
+// Utility to join Tailwind classes (if you don’t have `clsx`, use this)
+const clx = (...args: (string | false | undefined)[]) => args.filter(Boolean).join(' ');
+
+// Reusable input class (same as your other textbox)
+export const quickSearchInputClasses = clx(
+  'px-3 py-2 text-sm leading-6 min-h-10 w-full appearance-none rounded border border-solid bg-[#FFFFFF]',
+  'focus:shadow-input-box-shadow outline-0 disabled:border-gray-200 disabled:bg-gray-100'
+);
+
+type QuickSearchWrapperProps<T> = {
+  placeholder?: string;
+  minLength?: number;
+  delay?: number;
+  onSearch: (query: string) => Promise<T[]>;
+  onSelect: (item: T) => void;
+  renderItem: (item: T) => React.ReactNode;
+  className?: string;
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+};
+
+export function QuickSearchWrapper<T>({
+  placeholder = 'Search...',
+  minLength = 3,
+  delay = 300,
+  onSearch,
+  onSelect,
+  renderItem,
+  className = '',
+  selectedValue,
+  setSelectedValue,
+}: QuickSearchWrapperProps<T>) {
+  const [results, setResults] = useState<T[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    if (selectedValue.length >= minLength) {
+      const handler = setTimeout(async () => {
+        const items = await onSearch(selectedValue);
+        setResults(items);
+        setShowDropdown(true);
+      }, delay);
+
+      return () => clearTimeout(handler);
+    } else {
+      setResults([]);
+      setShowDropdown(false);
+    }
+  }, [selectedValue, onSearch, minLength, delay]);
+
+  return (
+    <div className={clx('relative w-full', className)}>
+      <input
+        type="text"
+        className={quickSearchInputClasses}
+        placeholder={placeholder}
+        value={selectedValue}
+        onChange={(e) => setSelectedValue(e.target.value)}
+        onFocus={() => {
+          if (results.length > 0) setShowDropdown(true);
+        }}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+      />
+
+      {showDropdown && results.length > 0 && (
+        <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+          {results.map((item, idx) => (
+            <li
+              key={idx}
+              className="px-4 py-2 text-sm cursor-pointer hover:bg-indigo-100"
+              onClick={() => {
+                const displayText = (item as any).display || (item as any).name || '';
+                setSelectedValue(displayText);
+                onSelect(item);
+                setShowDropdown(false);
+              }}
+            >
+              {renderItem(item)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
