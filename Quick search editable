@@ -1,0 +1,29 @@
+const [selectedUser, setSelectedUser] = useState<User | null>(null);
+const [searchText, setSearchText] = useState('');
+
+// Load existing user on edit mode
+useEffect(() => {
+  if (mode === 'edit' && sltData?.name) {
+    setSearchText(sltData.name);
+    setSelectedUser({ name: sltData.name, id: sltData.id }); // adapt based on your structure
+  }
+}, [mode, sltData]);
+
+// Handle input change
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setSearchText(value);
+
+  if (!selectedUser || selectedUser.name !== value) {
+    setSelectedUser(null);
+  }
+
+  onSearch(value); // Trigger search
+};
+
+// On selecting from dropdown
+const handleSelect = (user: User) => {
+  setSelectedUser(user);
+  setSearchText(user.name);
+  setIsDropdownVisible(false);
+};
