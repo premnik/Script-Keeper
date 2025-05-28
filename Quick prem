@@ -1,0 +1,77 @@
+import React, { useState, useEffect, useRef } from 'react';
+
+interface QuickSearchWrapperProps<T> {
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+  onSearch: (query: string) => Promise<T[]>;
+  onSelect: (item: T) => void;
+  renderItem: (item: T) => React.ReactNode;
+}
+
+export function QuickSearchWrapper<T>({
+  selectedValue,
+  setSelectedValue,
+  onSearch,
+  onSelect,
+  renderItem,
+}: QuickSearchWrapperProps<T>) {
+  const [results, setResults] = useState<T[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const skipSearch = useRef(false); // To skip triggering search on controlled update
+
+  useEffect(() => {
+    if (skipSearch.current) {
+      skipSearch.current = false;
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      if (selectedValue.length > 0) {
+        const data = await onSearch(selectedValue);
+        setResults(data);
+        setShowDropdown(true);
+      } else {
+        setShowDropdown(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [selectedValue]);
+
+  const handleSelect = (item: T) => {
+    const label = (item as any).name; // Adjust if field is different
+    setSelectedValue(label);
+    onSelect(item);
+    setResults([]);
+    setShowDropdown(false);
+    skipSearch.current = true; // Prevent search when value is programmatically set
+  };
+
+  return (
+    <div className="relative w-full">
+      <input
+        type="text"
+        className="px-3 py-2 text-sm border rounded w-full"
+        value={selectedValue}
+        onChange={(e) => setSelectedValue(e.target.value)}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // Optional: hide on blur
+        onFocus={() => {
+          if (results.length > 0) setShowDropdown(true);
+        }}
+      />
+      {showDropdown && results.length > 0 && (
+        <div className="absolute z-10 bg-white border mt-1 w-full rounded shadow">
+          {results.map((item, idx) => (
+            <div
+              key={idx}
+              className="px-3 py-2 cursor-pointer hover:bg-indigo-100"
+              onClick={() => handleSelect(item)}
+            >
+              {renderItem(item)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
