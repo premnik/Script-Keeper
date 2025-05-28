@@ -1,0 +1,119 @@
+import React, { useState, useEffect } from 'react';
+
+interface QuickSearchWrapperProps<T> {
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+  onSearch: (query: string) => Promise<T[]>;
+  onSelect: (item: T) => void;
+  renderItem: (item: T) => React.ReactNode;
+}
+
+export function QuickSearchWrapper<T>({
+  selectedValue,
+  setSelectedValue,
+  onSearch,
+  onSelect,
+  renderItem,
+}: QuickSearchWrapperProps<T>) {
+  const [results, setResults] = useState<T[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      if (selectedValue.length > 0) {
+        const data = await onSearch(selectedValue);
+        setResults(data);
+        setShowDropdown(true);
+      } else {
+        setShowDropdown(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [selectedValue]);
+
+  const handleSelect = (item: T) => {
+    onSelect(item);
+    setShowDropdown(false);
+  };
+
+  return (
+    <div className="relative w-full">
+      <input
+        type="text"
+        className="px-3 py-2 text-sm border rounded w-full"
+        value={selectedValue}
+        onChange={(e) => setSelectedValue(e.target.value)}
+      />
+      {showDropdown && results.length > 0 && (
+        <div className="absolute z-10 bg-white border mt-1 w-full rounded shadow">
+          {results.map((item, idx) => (
+            <div
+              key={idx}
+              className="px-3 py-2 cursor-pointer hover:bg-indigo-100"
+              onClick={() => handleSelect(item)}
+            >
+              {renderItem(item)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+----
+import React, { useState } from 'react';
+import { QuickSearchWrapper } from './QuickSearchWrapper';
+
+interface User {
+  id: string;
+  name: string;
+}
+
+const USERS: User[] = [
+  { id: '1', name: 'Prem' },
+  { id: '2', name: 'Prem Cha' },
+  { id: '3', name: 'Prem Chandhar' },
+  { id: '4', name: 'Alison' },
+];
+
+const ParentComponent = () => {
+  const [searchText, setSearchText] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const fetchUsers = async (query: string): Promise<User[]> => {
+    return USERS.filter((u) =>
+      u.name.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setSearchText(user.name); // Set text box to selected user
+  };
+
+  return (
+    <div className="max-w-md p-4">
+      <h2 className="mb-2 font-bold">SLT Quick Search</h2>
+
+      <QuickSearchWrapper<User>
+        selectedValue={searchText}
+        setSelectedValue={setSearchText}
+        onSearch={fetchUsers}
+        onSelect={handleUserSelect}
+        renderItem={(u) => (
+          <>
+            {u.name} <span className="text-xs text-gray-500">(ID: {u.id})</span>
+          </>
+        )}
+      />
+
+      <div className="mt-4 text-sm text-gray-700">
+        <strong>Selected User:</strong>{' '}
+        {selectedUser ? `${selectedUser.name} (ID: ${selectedUser.id})` : 'None'}
+      </div>
+    </div>
+  );
+};
+
+export default ParentComponent;
