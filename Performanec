@@ -1,0 +1,32 @@
+1. What went well for you?
+
+Over the past review period, I consistently demonstrated ownership, innovation, and collaboration across various projects:
+	•	✅ GPSR Workflow: Successfully developed and deployed the GPSR workflow independently without SME support. Despite technical hurdles, I collaborated directly with the DPS and vendor teams, ensuring a smooth, issue-free production release.
+	•	✅ ERIC Report Analysis: Collaborated with the team to analyze and deliver Statenet and Federal Feed reports for ERIC. I also helped reverse-engineer the database logic and provided knowledge transfer to the wider team despite limited documentation and support.
+	•	✅ .NET Core Migration (BACS): Contributed to the BACS configuration screen in .NET Core and prepared for future CSS module migration and OpenShift containerization, showing adaptability to modern technology stacks.
+	•	✅ RAPT Finance App (UI): Took full initiative in UI development, including a dynamic quick search feature that impressed leadership during the demo. This effort was beyond regular work hours and recognized by stakeholders like Pandu.
+	•	✅ ERD BAU & Issue Resolution: Maintained active ownership of ERD-related tasks and production support, resolving issues promptly and ensuring on-time deliveries.
+	•	✅ Innovation Contributions:
+	•	Created a reusable CLOB validation function, now adopted across multiple teams.
+	•	Built the UI framework for ScriptHub using Angular and structured it for easy extension.
+	•	Participated in the DAPR POC for 8 months, finalizing Docker strategy for OpenShift and completing demo and repo integration.
+	•	Cleared 2 rounds in the e4e-Horizon Innovation Contest, competing among 1230+ teams.
+	•	✅ Certifications: Completed certifications in React and AI/ML, reflecting my commitment to continuous learning.
+
+⸻
+
+2. What could you have done better? (As an individual)
+	•	🔸 Proactive Communication: In some cases, especially during cross-functional dependencies, earlier and more assertive communication might have helped expedite resolutions or surface risks faster.
+	•	🔸 Time Management During Multi-tasking: While handling parallel tasks like GPSR, ERD, and RAPT, there were moments where deeper prioritization could have improved efficiency, especially in managing overlapping timelines and context switching.
+	•	🔸 Documentation: I could have maintained better documentation for some of the innovative solutions I developed (e.g., CLOB function, UI structure), to enable smoother handover and long-term usability by other teams.
+	•	🔸 Tech Depth in Backend: While I’ve contributed strongly to UI and workflow, I aim to deepen my expertise in backend microservices (e.g., DAPR, containerization), to contribute more holistically across the stack.
+
+⸻
+
+3. Focus areas for the remaining year
+	•	🎯 OpenShift & Containerization: Focus on completing the OpenShift containerization tasks for BACS and contributing more to CI/CD, Docker, and deployment strategy.
+	•	🎯 Full-stack Contribution: Extend my backend capabilities in .NET Core and DAPR-based microservices to become a stronger full-stack contributor.
+	•	🎯 Production Support & Stability: Take ownership of more production issues in GPSR, ERD, and new projects to enhance operational reliability.
+	•	🎯 Innovation & Reusability: Continue contributing innovation ideas with a focus on reusable components/functions and system optimization.
+	•	🎯 Mentorship & Knowledge Sharing: Take time to mentor new team members and share learnings through reverse KTs, documentation, or sessions, especially for systems like ERIC and GPSR.
+	•	🎯 Certifications: Plan to pursue certifications related to cloud platforms (Azure/AWS) and container orchestration to align with evolving team goals.
