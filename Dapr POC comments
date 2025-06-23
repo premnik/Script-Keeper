@@ -1,0 +1,7 @@
+DAPR POC Update:
+
+We spent nearly 8 months working on the DAPR proof of concept (POC), exploring multiple deployment strategies on OpenShift. The development phase is now complete, and all code changes have been checked into the repository.
+
+During the deployment phase, we encountered some issues related to image creation within OpenShift. We’ve escalated the issue by emailing the core team and are currently awaiting their response.
+
+Additionally, we received a note of appreciation from George’s team, acknowledging our efforts and the value delivered through this POC.
