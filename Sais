@@ -1,0 +1,67 @@
+SELECT 
+    es.execution_id,
+    es.package_name,
+    es.status,
+    em.message
+FROM 
+    catalog.executions es
+JOIN 
+    catalog.event_messages em ON es.execution_id = em.execution_id
+WHERE 
+    es.status != 1  -- 1 = Success
+ORDER BY 
+    es.start_time DESC;
+
+----SSIS packages deployed to the SSISDB catalog log execution details automatically. You can query these logs using T-SQL:
+
+SELECT 
+    es.execution_id,
+    es.package_name,
+    es.status,
+    em.message
+FROM 
+    catalog.executions es
+JOIN 
+    catalog.event_messages em ON es.execution_id = em.execution_id
+WHERE 
+    es.status != 1  -- 1 = Success
+ORDER BY 
+    es.start_time DESC;
+
+---
+
+🔧 AutoSys Job to Capture SSIS Logs
+
+1. Create a Script to Query SSISDB Logs
+
+Save this as `get_ssis_log.sh`:
+
+#!/bin/bash
+sqlcmd -S <SQL_SERVER_NAME> -d SSISDB -E -Q "SET NOCOUNT ON; <your query here>" -o /path/to/logs/ssis_error_log.txt
+
+Replace `<your query here>` with the T-SQL above or a stored procedure like `dbo.get_ssis_status`.
+
+---
+
+2. Define AutoSys Job with Output Logging
+
+insert_job: capture_ssis_log
+job_type: c
+command: /path/to/get_ssis_log.sh
+machine: your_machine
+std_out_file: /path/to/logs/capture_ssis_log_output.txt
+std_err_file: /path/to/logs/capture_ssis_log_error.txt
+
+This job will run the script and save the SSIS error log to a file.
+
+---
+
+3. Optional: Email the Log File
+
+Add a second job or include in the script:
+
+mail -s "SSIS Error Log" recipient@example.com < /path/to/logs/ssis_error_log.txt
+
+Or use `sendmail`, `mailx`, or `mutt` depending on your system.
+
+
