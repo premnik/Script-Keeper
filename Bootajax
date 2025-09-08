@@ -1,0 +1,27 @@
+function loadApplicationsGrid() {
+    $.ajax({
+        url: "/Application/LoadGridPartial",
+        type: "GET",
+        success: function (data) {
+            // Insert partial HTML
+            $("#gridContainer").html(data);
+
+            // Re-initialize Kendo widgets inside the new HTML
+            kendo.init($("#gridContainer"));
+
+            // Ensure validation + deferred scripts work
+            if ($.validator && $.validator.unobtrusive) {
+                $.validator.unobtrusive.parse($("#gridContainer"));
+            }
+
+            // Now grid is available
+            var grid = $("#gridApplications").data("kendoGrid");
+            if (grid) {
+                grid.dataSource.read();
+            }
+        },
+        error: function (xhr) {
+            console.error("Error loading grid:", xhr);
+        }
+    });
+}
