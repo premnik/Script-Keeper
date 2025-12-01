@@ -1,0 +1,8 @@
+After mid-year, I have been working on the BACS migration from the legacy application to .NET Core.
+	•	Took complete ownership of converting Bootstrap from the older BACS version (3.1) to Bootstrap 5.1. Successfully migrated the entire BACS CSS from legacy to Core.
+	•	Contributed to container deployment configurations as part of the migration activities.
+	•	Owned the RIMS end-to-end migration from legacy to Core, ensuring all validations were fully covered and tested individually.
+
+Additional Contributions:
+	•	ERD BAU November release was successfully delivered. It was a major release, and we completed it without any blockers, even in the absence of Murali.
+	•	RAPT – Developed the Accounts Management UI screen end-to-end along with all validations. Provided a detailed demo to Pandu individually.
